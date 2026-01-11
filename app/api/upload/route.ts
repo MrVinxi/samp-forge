@@ -1,0 +1,41 @@
+import { google } from 'googleapis';
+import { NextResponse } from 'next/server';
+
+export async function POST(req: Request) {
+  try {
+    const formData = await req.formData();
+    const file = formData.get('file') as File;
+
+    if (!file) {
+      return NextResponse.json({ error: "File tidak ditemukan" }, { status: 400 });
+    }
+
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      },
+      scopes: ['https://www.googleapis.com/auth/drive.file'],
+    });
+
+    const drive = google.drive({ version: 'v3', auth });
+    const buffer = Buffer.from(await file.arrayBuffer());
+    
+    const response = await drive.files.create({
+      requestBody: {
+        name: `BUKTI_TF_${Date.now()}_${file.name}`,
+        // SINKRON: Mengambil ID Folder dari env
+        parents: [process.env.GOOGLE_DRIVE_FOLDER_ID || ''], 
+      },
+      media: {
+        mimeType: file.type,
+        body: require('stream').Readable.from(buffer),
+      },
+    });
+
+    return NextResponse.json({ success: true, fileId: response.data.id });
+  } catch (error: any) {
+    console.error("DRIVE_UPLOAD_ERROR:", error);
+    return NextResponse.json({ error: "Gagal upload ke Drive" }, { status: 500 });
+  }
+}

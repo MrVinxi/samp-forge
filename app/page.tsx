@@ -1,9 +1,12 @@
 'use client';
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
 export default function SampForge() {
+  // State untuk fitur zoom
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   return (
     <div className="wrapper">
       <style jsx global>{`
@@ -16,7 +19,6 @@ export default function SampForge() {
           overflow-x: hidden;
         }
 
-        /* Efek Cahaya Background */
         .bg-glow {
           position: fixed;
           top: 0; left: 0; width: 100%; height: 100%;
@@ -27,7 +29,6 @@ export default function SampForge() {
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-        /* Glassmorphism Effect */
         .glass {
           background: rgba(15, 23, 42, 0.6);
           backdrop-filter: blur(15px);
@@ -56,9 +57,42 @@ export default function SampForge() {
 
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
         .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+
+        /* Overlay Fullscreen saat gambar diklik */
+        .zoom-overlay {
+          position: fixed;
+          top: 0; left: 0; width: 100%; height: 100%;
+          background: rgba(0, 0, 0, 0.9);
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: zoom-out;
+        }
       `}</style>
 
       <div className="bg-glow" />
+
+      {/* MODAL ZOOM */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div 
+            className="zoom-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedImage(null)}
+          >
+            <motion.img 
+              src={selectedImage}
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              style={{ maxWidth: '90%', maxHeight: '90vh', borderRadius: '16px', boxShadow: '0 0 40px rgba(59, 130, 246, 0.5)' }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* NAVBAR */}
       <motion.nav 
@@ -69,8 +103,6 @@ export default function SampForge() {
           <h1 style={{ fontSize: '24px', fontWeight: 800, letterSpacing: '-1px' }}>SAMP<span style={{ color: '#3b82f6' }}>-FORGE</span></h1>
           <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
             <a href="#pricing" style={{ textDecoration: 'none', color: '#94a3b8', fontSize: '14px', fontWeight: 600 }}>Layanan</a>
-            
-            {/* UPDATE DI SINI */}
             <Link href="/order">
               <button className="btn-modern">ORDER NOW</button>
             </Link>
@@ -100,21 +132,15 @@ export default function SampForge() {
         </motion.p>
       </section>
 
-      {/* JASA DEVELOPER (PRICING) */}
+      {/* PRICING */}
       <section id="pricing" className="container" style={{ marginBottom: '100px' }}>
         <h3 style={{ textAlign: 'center', fontSize: '32px', fontWeight: 800 }}>Jasa Developer Langganan</h3>
         <div className="grid-3">
-          {/* HARIAN */}
           <PricingCard title="Paket Harian" price="20.000" features={["1x Update Fitur", "Bebas Perbaikan Bug", "Konsultasi Ringan"]} />
-          
-          {/* MINGGUAN */}
           <PricingCard title="Paket Mingguan" price="50.000" features={["6x Update Fitur", "Bebas Perbaikan Bug Sepuasnya", "Optimasi Script Ringan", "Prioritas Pengerjaan"]} highlighted={true} />
-          
-          {/* BULANAN */}
           <PricingCard title="Paket Bulanan" price="160.000" features={["24x Update Fitur", "Bebas Perbaikan Bug Sepuasnya", "Full Support Developer", "Backup Data Rutin"]} />
         </div>
 
-        {/* INFO PENTING (JANGAN DIHAPUS) */}
         <motion.div 
           whileHover={{ scale: 1.01 }}
           style={{ marginTop: '50px', padding: '25px', background: 'rgba(234, 179, 8, 0.05)', border: '1px solid #854d0e', borderRadius: '20px', color: '#eab308' }}
@@ -136,19 +162,22 @@ export default function SampForge() {
         </div>
       </section>
 
-      {/* TESTIMONI */}
+      {/* TESTIMONI - UPDATE UKURAN KECIL */}
       <section className="container" style={{ padding: '100px 0' }}>
         <h3 style={{ textAlign: 'center', marginBottom: '50px' }}>Bukti Pengerjaan & Testimoni</h3>
-        <div className="grid-4" style={{ alignItems: 'start' }}> {/* Menambahkan alignItems start agar kotak tidak dipaksa sama tinggi */}
-          {[1, 2,].map((i) => (
+        <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          {[1, 2].map((i) => (
             <motion.div 
               key={i} 
-              whileHover={{ y: -10, rotate: 2 }}
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setSelectedImage(`/testimoni${i}.jpeg`)}
               className="glass" 
               style={{ 
-                height: 'auto',        /* Mengubah height dari 250px ke auto agar mengikuti gambar */
+                width: '120px',   /* UKURAN KECIL TETAP */
+                height: '120px',  /* UKURAN KECIL TETAP */
                 overflow: 'hidden',
-                display: 'block' 
+                cursor: 'zoom-in',
+                border: '2px solid rgba(59, 130, 246, 0.5)'
               }}
             >
               <img 
@@ -156,8 +185,8 @@ export default function SampForge() {
                 alt={`Testimoni ${i}`} 
                 style={{ 
                   width: '100%', 
-                  height: 'auto',      /* Mengubah height ke auto agar proporsional */
-                  display: 'block',    /* Menghilangkan gap kecil di bawah gambar */
+                  height: '100%', 
+                  objectFit: 'cover', /* Menjaga gambar tetap rapi di kotak kecil */
                   opacity: 0.8 
                 }} 
               />
@@ -173,7 +202,6 @@ export default function SampForge() {
   );
 }
 
-// Komponen Card Kecil
 function ServiceBox({ title, price, desc }: any) {
   return (
     <motion.div whileHover={{ y: -5, borderColor: '#3b82f6' }} className="glass" style={{ padding: '25px' }}>
@@ -184,7 +212,6 @@ function ServiceBox({ title, price, desc }: any) {
   );
 }
 
-// Komponen Card Harga
 function PricingCard({ title, price, features, highlighted = false }: any) {
   return (
     <motion.div 

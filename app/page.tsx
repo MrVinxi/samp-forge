@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
 export default function SampForge() {
-  // State untuk fitur zoom
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
@@ -58,7 +57,6 @@ export default function SampForge() {
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
         .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
 
-        /* Overlay Fullscreen saat gambar diklik */
         .zoom-overlay {
           position: fixed;
           top: 0; left: 0; width: 100%; height: 100%;
@@ -73,7 +71,7 @@ export default function SampForge() {
 
       <div className="bg-glow" />
 
-      {/* MODAL ZOOM */}
+      {/* MODAL ZOOM TESTIMONI */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div 
@@ -132,7 +130,7 @@ export default function SampForge() {
         </motion.p>
       </section>
 
-      {/* PRICING */}
+      {/* JASA DEVELOPER (PRICING) */}
       <section id="pricing" className="container" style={{ marginBottom: '100px' }}>
         <h3 style={{ textAlign: 'center', fontSize: '32px', fontWeight: 800 }}>Jasa Developer Langganan</h3>
         <div className="grid-3">
@@ -149,7 +147,7 @@ export default function SampForge() {
         </motion.div>
       </section>
 
-      {/* JASA SATUAN */}
+      {/* JASA SATUAN - UPDATED WITH BUTTONS */}
       <section style={{ background: '#070a1a', padding: '100px 0' }}>
         <div className="container">
           <h3 style={{ marginBottom: '50px', fontSize: '28px' }}>Layanan Satuan & Perbaikan</h3>
@@ -162,7 +160,7 @@ export default function SampForge() {
         </div>
       </section>
 
-      {/* TESTIMONI - UPDATE UKURAN KECIL */}
+      {/* TESTIMONI */}
       <section className="container" style={{ padding: '100px 0' }}>
         <h3 style={{ textAlign: 'center', marginBottom: '50px' }}>Bukti Pengerjaan & Testimoni</h3>
         <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -172,24 +170,9 @@ export default function SampForge() {
               whileHover={{ scale: 1.05 }}
               onClick={() => setSelectedImage(`/testimoni${i}.jpeg`)}
               className="glass" 
-              style={{ 
-                width: '120px',   /* UKURAN KECIL TETAP */
-                height: '120px',  /* UKURAN KECIL TETAP */
-                overflow: 'hidden',
-                cursor: 'zoom-in',
-                border: '2px solid rgba(59, 130, 246, 0.5)'
-              }}
+              style={{ width: '120px', height: '120px', overflow: 'hidden', cursor: 'zoom-in', border: '2px solid rgba(59, 130, 246, 0.5)' }}
             >
-              <img 
-                src={`/testimoni${i}.jpeg`} 
-                alt={`Testimoni ${i}`} 
-                style={{ 
-                  width: '100%', 
-                  height: '100%', 
-                  objectFit: 'cover', /* Menjaga gambar tetap rapi di kotak kecil */
-                  opacity: 0.8 
-                }} 
-              />
+              <img src={`/testimoni${i}.jpeg`} alt="Testi" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} />
             </motion.div>
           ))}
         </div>
@@ -204,10 +187,21 @@ export default function SampForge() {
 
 function ServiceBox({ title, price, desc }: any) {
   return (
-    <motion.div whileHover={{ y: -5, borderColor: '#3b82f6' }} className="glass" style={{ padding: '25px' }}>
-      <h5 style={{ color: '#3b82f6', marginBottom: '10px' }}>{title}</h5>
-      <div style={{ fontSize: '24px', fontWeight: 800, marginBottom: '10px' }}>IDR {price}</div>
-      <p style={{ fontSize: '13px', color: '#94a3b8' }}>{desc}</p>
+    <motion.div 
+      whileHover={{ y: -5, borderColor: '#3b82f6' }} 
+      className="glass" 
+      style={{ padding: '25px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}
+    >
+      <div>
+        <h5 style={{ color: '#3b82f6', marginBottom: '10px' }}>{title}</h5>
+        <div style={{ fontSize: '24px', fontWeight: 800, marginBottom: '10px' }}>IDR {price}</div>
+        <p style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '20px' }}>{desc}</p>
+      </div>
+      <Link href={`/order?package=${encodeURIComponent(title)}&price=${encodeURIComponent(price)}`}>
+        <button style={{ width: '100%', padding: '12px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid #3b82f6', color: 'white', borderRadius: '10px', fontWeight: 700, cursor: 'pointer' }}>
+          Pilih Layanan
+        </button>
+      </Link>
     </motion.div>
   );
 }
@@ -218,8 +212,7 @@ function PricingCard({ title, price, features, highlighted = false }: any) {
       whileHover={{ y: -10 }}
       className="glass shadow-card" 
       style={{ 
-        padding: '40px', 
-        position: 'relative',
+        padding: '40px', position: 'relative',
         border: highlighted ? '2px solid #3b82f6' : '1px solid rgba(255,255,255,0.1)',
         boxShadow: highlighted ? '0 0 40px rgba(59, 130, 246, 0.2)' : 'none'
       }}
@@ -234,7 +227,9 @@ function PricingCard({ title, price, features, highlighted = false }: any) {
           </li>
         ))}
       </ul>
-      <button className="btn-modern" style={{ width: '100%', marginTop: '30px', background: highlighted ? '#3b82f6' : 'transparent', border: highlighted ? 'none' : '1px solid #3b82f6' }}>Pilih Paket</button>
+      <Link href={`/order?package=${encodeURIComponent(title)}&price=${encodeURIComponent(price)}`}>
+        <button className="btn-modern" style={{ width: '100%', marginTop: '30px', background: highlighted ? '#3b82f6' : 'transparent', border: highlighted ? 'none' : '1px solid #3b82f6' }}>Pilih Paket</button>
+      </Link>
     </motion.div>
   );
 }

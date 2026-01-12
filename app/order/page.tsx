@@ -1,10 +1,17 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react'; // Tambah Suspense
 import { motion } from 'framer-motion';
+import { useSearchParams } from 'next/navigation'; // Tambah ini untuk ambil data paket
 
-export default function OrderPage() {
+// Kita bungkus konten utama agar useSearchParams bekerja dengan aman di Next.js
+function OrderContent() {
+  const searchParams = useSearchParams();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  // LOGIKA BARU: Menangkap data paket dari Landing Page
+  const packageName = searchParams.get('package') || "Layanan Custom";
+  const packagePrice = searchParams.get('price') || "Cek Admin";
 
   const handleAutoProcess = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -25,10 +32,12 @@ export default function OrderPage() {
 
       if (!response.ok) throw new Error("Upload Drive Gagal");
 
-      // 2. OTOMATIS REDIRECT KE WHATSAPP SETELAH BERHASIL
+      // 2. OTOMATIS REDIRECT KE WHATSAPP SETELAH BERHASIL (DENGAN DATA PAKET)
       const phoneNumber = "6285816912868";
       const message = encodeURIComponent(
-        `Halo Admin SAMP-FORGE, saya sudah transfer.\n\n` +
+        `Halo Admin SAMP-FORGE, saya memesan paket berikut:\n\n` +
+        `📦 *Paket:* ${packageName}\n` +
+        `💰 *Harga:* IDR ${packagePrice}\n` +
         `✅ Bukti transfer telah terupload otomatis ke Google Drive.\n` +
         `Nama File: ${file.name}\n\n` +
         `Mohon segera diproses, terima kasih!`
@@ -40,7 +49,9 @@ export default function OrderPage() {
       // Jika Drive gagal, tetap arahkan ke WA agar transaksi tidak batal
       alert("Sistem Drive sibuk, mengalihkan langsung ke WhatsApp...");
       const phoneNumber = "6285816912868";
-      const message = encodeURIComponent("Halo Admin, saya ingin konfirmasi pembayaran manual.");
+      const message = encodeURIComponent(
+        `Halo Admin, saya memesan paket ${packageName}. Bukti transfer gagal upload otomatis, saya kirim manual di sini.`
+      );
       window.location.href = `https://wa.me/${phoneNumber}?text=${message}`;
     } finally {
       setIsUploading(false);
@@ -149,8 +160,16 @@ export default function OrderPage() {
             />
           </motion.div>
 
-          {/* DETAILS */}
+          {/* DETAILS - DI SINI DATA PAKET DITAMPILKAN */}
           <div style={{ marginBottom: '30px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <span style={{ color: '#94a3b8', fontSize: '14px' }}>Paket Dipilih</span>
+              <span style={{ fontWeight: 700, fontSize: '14px', color: '#3b82f6' }}>{packageName}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <span style={{ color: '#94a3b8', fontSize: '14px' }}>Total Tagihan</span>
+              <span style={{ fontWeight: 700, fontSize: '14px' }}>IDR {packagePrice}</span>
+            </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
               <span style={{ color: '#94a3b8', fontSize: '14px' }}>Metode</span>
               <span style={{ fontWeight: 700, fontSize: '14px' }}>QRIS All Payment</span>
@@ -206,7 +225,7 @@ export default function OrderPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="btn-wa-modern"
-            onClick={() => window.open('https://wa.me/6285816912868', '_blank')}
+            onClick={() => window.open(`https://wa.me/6285816912868?text=Halo Admin, saya memesan paket ${packageName}.`, '_blank')}
             disabled={isUploading}
           >
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -221,5 +240,14 @@ export default function OrderPage() {
         &copy; 2026 SAMP-FORGE. Secure Transaction via Google Drive API.
       </footer>
     </div>
+  );
+}
+
+// Komponen Utama dengan Suspense agar useSearchParams tidak error saat build
+export default function OrderPage() {
+  return (
+    <Suspense fallback={<div style={{color: 'white', textAlign: 'center', marginTop: '50px'}}>Loading Order System...</div>}>
+      <OrderContent />
+    </Suspense>
   );
 }

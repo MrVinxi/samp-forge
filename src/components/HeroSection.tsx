@@ -47,9 +47,10 @@ const HeroSection = () => {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mt-16 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.9s" }}>
           {[
-            { value: "500+", label: "Server Aktif" },
-            { value: "1.2K", label: "Client Puas" },
+            { value: "11", label: "Total Product" },
+            { value: "6", label: "Client Puas" },
             { value: "99%", label: "Rating" },
+            { value: "100%", label: "Amanah dan Fast respon" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <p className="font-display text-2xl md:text-3xl font-bold neon-text">{stat.value}</p>

@@ -3,20 +3,41 @@ import { Star } from "lucide-react";
 const testimonials = [
   {
     name: "Reza nur",
-    role: "Owner Server RP",
+    role: "Buyer",
     text: "Gamemode dari SAMP-FORGE kualitasnya mantap, server langsung rame! Support-nya juga fast response banget.",
     rating: 5,
   },
   {
     name: "nando samp",
-    role: "Developer SA-MP",
+    role: "Buyer",
     text: "Paket developer bulanannya worth it banget. Fitur custom sesuai request dan hasilnya professional.",
     rating: 5,
   },
   {
     name: "Rifky",
-    role: "Owner Server DM",
+    role: "Buyer",
     text: "Setup servernya cepat, anti-cheatnya ampuh. Recommended banget buat yang mau bikin server SA-MP!",
+    rating: 5,
+  },
+  {
+    name: "rehan",
+    role: "Buyer",
+    text: "mantap pengerjaan cepat dan amanah",
+    product: "jasa developer",
+    rating: 5,
+  },
+  {
+    name: "rey",
+    role: "Buyer",
+    text: "mantap amanah bos ku lanjutkan",
+    product: "jasa developer",
+    rating: 5,
+  },
+  {
+    name: "Bima",
+    role: "Buyer",
+    text: "dijamin amanah dan fast respon",
+    product: "jasa developer",
     rating: 5,
   },
 ];

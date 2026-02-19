@@ -23,21 +23,21 @@ const testimonials = [
     name: "rehan",
     role: "Buyer",
     text: "mantap pengerjaan cepat dan amanah",
-    product: "jasa developer",
+    product: "product: jasa developer",
     rating: 5,
   },
   {
     name: "rey",
     role: "Buyer",
     text: "mantap amanah bos ku lanjutkan",
-    product: "jasa developer",
+    product: "product: jasa developer",
     rating: 5,
   },
   {
     name: "Bima",
     role: "Buyer",
     text: "dijamin amanah dan fast respon",
-    product: "jasa developer",
+    product: "product: jasa developer",
     rating: 5,
   },
 ];
@@ -63,6 +63,7 @@ const TestimonialSection = () => {
               </div>
               <p className="font-body text-secondary-foreground mb-6 italic">"{t.text}"</p>
               <div>
+                <p className="font-body text-secondary-foreground mb-3 italic">{t.product}</p>
                 <p className="font-display text-sm font-bold text-foreground">{t.name}</p>
                 <p className="font-body text-xs text-muted-foreground">{t.role}</p>
               </div>

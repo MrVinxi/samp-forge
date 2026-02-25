@@ -36,13 +36,12 @@ const HeroSection = () => {
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
           <Button
-            variant="outline"
-            className="font-display text-sm font-bold h-12 px-8 border-primary/40 text-primary hover:bg-primary/10"
-            onClick={() => document.querySelector("#developer")?.scrollIntoView({ behavior: "smooth" })}
-          >
-            Paket Developer
-          </Button>
-        </div>
+          variant="outline"
+          className="font-display text-sm font-bold h-12 px-8 border-primary/40 text-primary hover:bg-primary/10"
+          onClick={() => window.open("https://forge-stories.vercel.app", "_blank")}
+        >
+          Testimoni
+        </Button>
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mt-16 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.9s" }}>
